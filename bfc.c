@@ -169,17 +169,17 @@ static int optimize(const Instruction *bcode, Instruction *out) {
 static void run(const Instruction *program) {
     int ip = 0;
     int dp = 0;
-    char tape[TAPELEN];
+    char data[TAPELEN];
     for (int i = 0; i < TAPELEN; i++)
-        tape[i] = 0;
+        data[i] = 0;
 
     while (program[ip].op != NUM_OPS) {
         switch (program[ip].op) {
         case OP_ADD:
-            tape[dp] = tape[dp] + program[ip].arg;
+            data[dp] = data[dp] + program[ip].arg;
             break;
         case OP_SUB:
-            tape[dp] = tape[dp] - program[ip].arg;
+            data[dp] = data[dp] - program[ip].arg;
             break;
         case OP_INC:
             dp = dp + program[ip].arg;
@@ -189,18 +189,18 @@ static void run(const Instruction *program) {
             break;
         case OP_PUT:
             for (int i = 0; i < program[ip].arg; i++)
-                putchar(tape[dp]);
+                putchar(data[dp]);
             break;
         case OP_GET:
             for (int i = 0; i < program[ip].arg; i++)
-                tape[dp] = getchar();
+                data[dp] = getchar();
             break;
         case OP_JMP:
-            if (tape[dp] == 0)
+            if (data[dp] == 0)
                 ip = program[ip].arg;
             break;
         case OP_JNE:
-            if (tape[dp] != 0)
+            if (data[dp] != 0)
                 ip = program[ip].arg;
             break;
         default:
@@ -241,6 +241,7 @@ int main(void) {
     if (stat != SUCCESS)
         quit("ERROR: Optimization failed");
 
+    clearerr(stdin);
     run(optimized);
     return 0;
 }
